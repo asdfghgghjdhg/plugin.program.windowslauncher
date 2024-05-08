@@ -19,7 +19,7 @@
 		<summary lang="en_GB">Windows Game Launcher</summary>
 		<description lang="ru_RU">Allow to start Windows games directly from KODI. Just select source of Your Windows games link collection then Plugin find it all and scrape game info from Internet.&#10;Simply launch selected Game as usual.</description>
 		<description lang="en_GB"></description>
-		<source></source>
+		<source>https://github.com/asdfghgghjdhg/plugin.program.windowslauncher</source>
 		<email>asdfghgghjdhg@gmail.com</email>
 	</extension>
 </addon>
