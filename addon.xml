@@ -3,7 +3,7 @@
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.requests" version="2.22.0"/>
-		<import addon="script.module.web-pdb" />
+		<!--<import addon="script.module.web-pdb" />-->
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="addon.py">
 		<provides>video game</provides>
