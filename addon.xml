@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon id="plugin.program.windowslauncher" name="Windows Links Launcher" version="0.9.1" provider-name="asdfghgghjdhg">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0"/>
+		<import addon="script.module.requests" version="2.22.0"/>
+		<import addon="script.module.web-pdb" />
+	</requires>
+	<extension point="xbmc.python.pluginsource" library="addon.py">
+		<provides>video game</provides>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<assets>
+			<icon>resources/media/icon.png</icon>
+			<fanart>resources/media/fanart.jpg</fanart>
+		</assets>
+		<platform>windows</platform>
+		<license>GPL-2.0-or-later</license>
+		<summary lang="ru_RU"></summary>
+		<summary lang="en_GB">Windows Game Launcher</summary>
+		<description lang="ru_RU">Allow to start Windows games directly from KODI. Just select source of Your Windows games link collection then Plugin find it all and scrape game info from Internet.&#10;Simply launch selected Game as usual.</description>
+		<description lang="en_GB"></description>
+		<source></source>
+		<email>asdfghgghjdhg@gmail.com</email>
+	</extension>
+</addon>

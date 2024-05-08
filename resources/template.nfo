@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<game>
+	<id></id>
+	<title></title>
+	<alt_title></alt_title>
+	<platform></platform>
+	<genre></genre>
+	<developer></developer>
+	<publisher></publisher>
+	<overview></overview>
+	<year></year>
+	<gameclient></gameclient>
+	<thumb spoof="" cache="" aspect="poster" preview=""></thumb>
+	<thumb spoof="" cache="" aspect="thumb" preview=""></thumb>
+	<thumb spoof="" cache="" aspect="fanart" preview=""></thumb>
+	<fanart>
+		<thumb colors="" preview=""></thumb>
+	</fanart>
+</game>

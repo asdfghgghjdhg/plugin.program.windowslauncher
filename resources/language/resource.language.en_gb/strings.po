@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Game Source"
+msgstr ""
+
+msgctxt "#30002"
+msgid "      Update Games"
+msgstr ""
+
+msgctxt "#30003"
+msgid "      Show Files"
+msgstr ""
+
+msgctxt "#30004"
+msgid "      Clear Games"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Content Type"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Games"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Addons"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Videos"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Game Info Source"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Playground.ru"
+msgstr ""
+
+msgctxt "#30901"
+msgid "Game Source not set\nPlease set Game Source in Addon Settings"
+msgstr ""
+
+msgctxt "#30902"
+msgid "Information"
+msgstr ""
+
+msgctxt "#30903"
+msgid "Update Game"
+msgstr ""
+
+msgctxt "#30904"
+msgid "Remove from Library"
+msgstr ""
+
+msgctxt "#30905"
+msgid "Update all Games in Source now?"
+msgstr ""
+
+msgctxt "#30906"
+msgid "Clearing Games Source"
+msgstr ""
+
+msgctxt "#30907"
+msgid "Do You really want to Clear all Games in Source?\nThis cannot be undone."
+msgstr ""
+
+msgctxt "#30908"
+msgid "Games Source cleared"
+msgstr ""
+
+msgctxt "#30909"
+msgid "Updating Game Source:"
+msgstr ""
+
+msgctxt "#30910"
+msgid "Select Game"
+msgstr ""
+
+msgctxt "#30911"
+msgid "Enter Game Title"
+msgstr ""

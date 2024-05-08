@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34729.46
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "plugin.program.windowslauncher", "plugin.program.windowslauncher.pyproj", "{11489AFB-8D30-4F32-B50C-6941233ADF19}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11489AFB-8D30-4F32-B50C-6941233ADF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11489AFB-8D30-4F32-B50C-6941233ADF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3D0DC357-1A03-48DD-B985-4B56A9E2964C}
+	EndGlobalSection
+EndGlobal

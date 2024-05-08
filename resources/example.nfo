@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<game>
+	<id>fallout_2</id>
+	<title>Fallout 2</title>
+	<alt_title />
+	<platform>PC</platform>
+	<developer>Black Isle</developer>
+	<publisher>Interplay</publisher>
+	<overview>Fallout 2, также как первая часть - настоящий шедевр. Удобная ролевая система, красивые, запоминающиеся бои, бездна юмора, множество побочных квестов и яркий, оригинальный мир. Музыка, графика, звук, сюжет, диалоги - всё это сделало игру безусловным хитом. Единственный минус - несколько неудачное начало, отталкивающее новых игроков.</overview>
+	<year>1998</year>
+	<gameclient />
+	<fanart>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47446/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47446/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47443/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47443/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47444/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47444/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47445/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47445/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47439/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47439/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47440/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47440/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47441/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47441/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/47442/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/47442/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/26105/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/26105/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13560/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13560/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13559/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13559/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13558/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13558/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13557/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13557/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13556/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13556/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13555/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13555/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13554/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13554/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13553/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13553/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13552/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13552/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13551/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13551/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13550/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13550/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13549/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13549/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13548/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13548/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13547/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13547/fallout_2.jpg</thumb>
+		<thumb colors="" preview="https://i.playground.ru/i/screenshot/13546/fallout_2.jpg?360x200">https://i.playground.ru/i/screenshot/13546/fallout_2.jpg</thumb>
+	</fanart>
+	<genre>Ролевая</genre>
+	<genre>От третьего лица</genre>
+	<genre>Открытый мир</genre>
+	<genre>Постапокалипсис</genre>
+	<thumb spoof="" cache="" aspect="poster" preview="">https://i.playground.ru/e/OXV-SIpevt1ew-UkirjfKA.jpeg</thumb>
+	<thumb spoof="" cache="" aspect="thumb" preview="">https://i.playground.ru/e/OXV-SIpevt1ew-UkirjfKA.jpeg?480x665</thumb>
+	<thumb spoof="" cache="" aspect="fanart" preview="">https://i.playground.ru/i/screenshot/47446/fallout_2.jpg</thumb>
+</game>
