@@ -792,7 +792,7 @@ class Addon(xbmcaddon.Addon):
             listItem.setProperty('IsPlayable', 'False')
             if not game.hasMetadata:
                 listItem.setLabel(os.path.basename(game.lnkFile))
-                menuItemUpdateInfo = (self.getLocalizedString(30903), 'RunPlugin({}?action=update_info&game={})'.format(self.url, game.name))
+                menuItemUpdateInfo = (self.getLocalizedString(30912), 'RunPlugin({}?action=update_info&game={})'.format(self.url, game.name))
                 listItem.addContextMenuItems([menuItemUpdateInfo])
             else:
                 menuItemShowInfo = (self.getLocalizedString(30902), 'RunPlugin({}?action=show_info&game={})'.format(self.url, game.name))

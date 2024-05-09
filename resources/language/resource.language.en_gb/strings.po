@@ -92,3 +92,7 @@ msgstr ""
 msgctxt "#30911"
 msgid "Enter Game Title"
 msgstr ""
+
+msgctxt "#30912"
+msgid "Scan to Library"
+msgstr ""
