@@ -26,6 +26,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="addon.py" />
+    <Compile Include="lib\urlfile.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lib\shelllink.py" />
   </ItemGroup>
   <ItemGroup>

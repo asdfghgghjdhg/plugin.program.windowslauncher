@@ -1520,8 +1520,8 @@ class ShellLink:
     def _getExtraData(self):
         return self._extraData
 
-    linkPath = property(fget = _getLinkPath, fset = None, fdel = None, doc = None)
-    linkFile = property(fget = _getLinkFile, fset = None, fdel = None, doc = None)
+    path = property(fget = _getLinkPath, fset = None, fdel = None, doc = None)
+    file = property(fget = _getLinkFile, fset = None, fdel = None, doc = None)
     shellLinkHeader = property(fget = _getHeader, fset = None, fdel = None, doc = None)
     linkTargetIdList = property(fget = _getLinkTargetIdList, fset = None, fdel = None, doc = None)
     linkInfo = property(fget = _getLinkInfo, fset = None, fdel = None, doc = None)
