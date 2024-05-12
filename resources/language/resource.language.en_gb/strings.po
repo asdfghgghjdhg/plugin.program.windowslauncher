@@ -6,11 +6,11 @@ msgid "General"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Game Source"
+msgid "Games Library Source"
 msgstr ""
 
 msgctxt "#30002"
-msgid "      Update Games"
+msgid "      Update Games Library"
 msgstr ""
 
 msgctxt "#30003"
@@ -18,7 +18,7 @@ msgid "      Show Files"
 msgstr ""
 
 msgctxt "#30004"
-msgid "      Clear Games"
+msgid "      Clear Games Library"
 msgstr ""
 
 msgctxt "#30011"
@@ -42,15 +42,31 @@ msgid "Movies"
 msgstr ""
 
 msgctxt "#30016"
-msgid "Game Info Source"
+msgid "Library Metadata Source"
 msgstr ""
 
 msgctxt "#30017"
 msgid "Playground.ru"
 msgstr ""
 
+msgctxt "#30018"
+msgid "IGDB.com"
+msgstr ""
+
+msgctxt "#30019"
+msgid "      Twitch Client ID"
+msgstr ""
+
+msgctxt "#30020"
+msgid "      Twitch Client Secret"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Scraper"
+msgstr ""
+
 msgctxt "#30901"
-msgid "Game Source not set\nPlease set Game Source in Addon Settings"
+msgid "Games Library Source not set\nPlease set Games Library Source in Addon Settings"
 msgstr ""
 
 msgctxt "#30902"
@@ -66,11 +82,11 @@ msgid "Remove from Library"
 msgstr ""
 
 msgctxt "#30905"
-msgid "Update all Games in Source now?"
+msgid "Update all Games in Library now?"
 msgstr ""
 
 msgctxt "#30906"
-msgid "Clearing Games Source"
+msgid "Clearing Games Library"
 msgstr ""
 
 msgctxt "#30907"
@@ -78,11 +94,11 @@ msgid "Do You really want to Clear all Games in Source?\nThis cannot be undone."
 msgstr ""
 
 msgctxt "#30908"
-msgid "Games Source cleared"
+msgid "Games Library cleared"
 msgstr ""
 
 msgctxt "#30909"
-msgid "Updating Game Source:"
+msgid "Updating Games Library:"
 msgstr ""
 
 msgctxt "#30910"
@@ -95,4 +111,20 @@ msgstr ""
 
 msgctxt "#30912"
 msgid "Scan to Library"
+msgstr ""
+
+msgctxt "#30913"
+msgid "Error getting response from {}"
+msgstr ""
+
+msgctxt "#30914"
+msgid "Error saving Data to Library"
+msgstr ""
+
+msgctxt "#30915"
+msgid "Searching\n{}"
+msgstr ""
+
+msgctxt "#30916"
+msgid "Getting Data\n{}"
 msgstr ""

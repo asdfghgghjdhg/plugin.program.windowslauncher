@@ -10,6 +10,7 @@
 	<overview></overview>
 	<year></year>
 	<gameclient></gameclient>
+	<rating type="" votes=""></rating>
 	<thumb spoof="" cache="" aspect="poster" preview=""></thumb>
 	<thumb spoof="" cache="" aspect="thumb" preview=""></thumb>
 	<thumb spoof="" cache="" aspect="fanart" preview=""></thumb>

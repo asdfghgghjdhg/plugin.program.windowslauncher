@@ -21,7 +21,7 @@
 					</dependencies>
 					<data>RunPlugin(plugin://$ID/?action=update_source)</data>
 					<control type="button" format="action">
-						<close>false</close>
+						<close>true</close>
 					</control>
 				</setting>
 				<setting id="list_files" type="action" label="30003" help="">
@@ -46,17 +46,6 @@
 				</setting>
             </group>
             <group id="2">
-				<setting id="scraper" type="integer" label="30016" help="">
-					<level>0</level>
-					<default>1</default>
-					<constraints>
-						<options>
-							<option label="30017">1</option>
-						</options>
-						<allowempty>false</allowempty>
-					</constraints>
-					<control type="spinner" format="string" />
-				</setting>
 				<setting id="content_type" type="string" label="30011" help="">
 					<level>0</level>
 					<default>games</default>
@@ -73,5 +62,45 @@
 				</setting>
             </group>
         </category>
+		<category id="scraper_cat" label="30021" help="">
+			<group id="1">
+				<setting id="scraper" type="integer" label="30016" help="">
+					<level>0</level>
+					<default>1</default>
+					<constraints>
+						<options>
+							<option label="30017">1</option>
+							<option label="30018">2</option>
+						</options>
+						<allowempty>false</allowempty>
+					</constraints>
+					<control type="spinner" format="string" />
+				</setting>
+				<setting id="twitch_client_id" type="string" label="30019" help="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible" operator="is" setting="scraper">2</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30019</heading>
+					</control>
+				</setting>
+				<setting id="twitch_client_secret" type="string" label="30020" help="">
+					<level>0</level>
+					<constraints>
+						<allowempty>true</allowempty>
+					</constraints>
+					<dependencies>
+						<dependency type="visible" operator="is" setting="scraper">2</dependency>
+					</dependencies>
+					<control type="edit" format="string">
+						<heading>30020</heading>
+					</control>
+				</setting>
+			</group>
+		</category>
     </section>
 </settings>

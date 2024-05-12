@@ -26,6 +26,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="addon.py" />
+    <Compile Include="lib\scrapers\igdb.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\utils.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\scrapers\playground.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\scrapers\scraper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lib\urlfile.py">
       <SubType>Code</SubType>
     </Compile>
@@ -43,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
+    <Folder Include="lib\scrapers\" />
     <Folder Include="resources\" />
     <Folder Include="resources\language\" />
     <Folder Include="resources\language\resource.language.en_gb\" />
