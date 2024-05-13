@@ -406,7 +406,8 @@ class Game:
         altTitle = ''
         if self._altTitle: altTitle = self._altTitle
 
-        listItem = xbmcgui.ListItem(self._title, altTitle, 'plugin://plugin.program.windowslinks?action=start&game={}'.format(self._name))
+        #listItem = xbmcgui.ListItem(self._title, altTitle, 'plugin://plugin.program.windowslinks?action=start&game={}'.format(self._name))
+        listItem = xbmcgui.ListItem(self._title, altTitle, self.lnkFile)
         listItem.setProperty('IsPlayable', 'True')
 
         if self._hasMetadata:
@@ -722,8 +723,6 @@ class Addon(xbmcaddon.Addon):
         log(LOG_TAG, xbmc.LOGDEBUG, 'source metadata cleared')
 
     def updateInfo(self, name: str):
-        # todo: show progress dialog
-
         log(LOG_TAG, xbmc.LOGDEBUG, 'updating metadata for game "{}"', name)
 
         try:
