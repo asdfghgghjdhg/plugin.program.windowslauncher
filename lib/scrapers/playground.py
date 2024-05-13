@@ -2,7 +2,6 @@ import re
 import html
 import json
 import requests
-
 import xbmc
 
 from urllib import parse

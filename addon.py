@@ -18,6 +18,8 @@ from lib.utils import log
 import lib.scrapers.scraper
 import lib.scrapers.playground
 import lib.scrapers.igdb
+import lib.scrapers.rawg
+import lib.scrapers.mobygames
 
 import xbmcaddon
 import xbmcgui
@@ -29,8 +31,10 @@ import xbmcvfs
 
 LOG_TAG                         = 'plugin.program.windowslauncher'
 
-SCRAPER_SOURCE_PLAYGROUND       = 0x01
-SCRAPER_SOURCE_IGDB             = 0x02
+SCRAPER_SOURCE_IGDB             = 0x01
+SCRAPER_SOURCE_PLAYGROUND       = 0x02
+SCRAPER_SOURCE_RAWG             = 0x03
+SCRAPER_SOURCE_MOBYGAMES        = 0x04
 
 class ShellExecuteInfo(ctypes.Structure):
     _fields_ = (
@@ -487,6 +491,10 @@ class Addon(xbmcaddon.Addon):
             self.scraper = lib.scrapers.playground.PGScraper()
         elif selectedScraper == SCRAPER_SOURCE_IGDB:
             self.scraper = lib.scrapers.igdb.IGDBScraper(self.getSettingString('twitch_client_id'), self.getSettingString('twitch_client_secret'))
+        elif selectedScraper == SCRAPER_SOURCE_RAWG:
+            self.scraper = lib.scrapers.rawg.RAWGScraper()
+        elif selectedScraper == SCRAPER_SOURCE_MOBYGAMES:
+            self.scraper = lib.scrapers.mobygames.MGScraper()
         else:
             self.scraper = lib.scrapers.scraper.GameScraper()
         

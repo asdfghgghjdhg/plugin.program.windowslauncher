@@ -2,7 +2,6 @@ import time
 import json
 import requests
 import xbmc
-import xbmcgui
 
 from datetime import datetime, timedelta
 from urllib import parse

@@ -72,6 +72,14 @@ msgctxt "#30021"
 msgid "Scraper"
 msgstr ""
 
+msgctxt "#30022"
+msgid "RAWG.io"
+msgstr ""
+
+msgctxt "#30023"
+msgid "MobyGames.com"
+msgstr ""
+
 msgctxt "#30901"
 msgid "Games Library Source not set\nPlease set Games Library Source in Addon Settings"
 msgstr ""

@@ -69,8 +69,10 @@
 					<default>1</default>
 					<constraints>
 						<options>
-							<option label="30017">1</option>
-							<option label="30018">2</option>
+							<option label="30018">1</option>
+							<option label="30017">2</option>
+							<option label="30022">3</option>
+							<option label="30023">4</option>
 						</options>
 						<allowempty>false</allowempty>
 					</constraints>
@@ -82,7 +84,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" operator="is" setting="scraper">2</dependency>
+						<dependency type="visible" operator="is" setting="scraper">1</dependency>
 					</dependencies>
 					<control type="edit" format="string">
 						<heading>30019</heading>
@@ -94,7 +96,7 @@
 						<allowempty>true</allowempty>
 					</constraints>
 					<dependencies>
-						<dependency type="visible" operator="is" setting="scraper">2</dependency>
+						<dependency type="visible" operator="is" setting="scraper">1</dependency>
 					</dependencies>
 					<control type="edit" format="string">
 						<heading>30020</heading>
