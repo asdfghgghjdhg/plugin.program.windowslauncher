@@ -47,6 +47,7 @@
     <Content Include="addon.xml" />
     <Content Include="resources\example.nfo" />
     <Content Include="resources\language\resource.language.en_gb\strings.po" />
+    <Content Include="resources\language\resource.language.ru_ru\strings.po" />
     <Content Include="resources\media\blank.png" />
     <Content Include="resources\media\fanart.jpg" />
     <Content Include="resources\media\icon.png" />
