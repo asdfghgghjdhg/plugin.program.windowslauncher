@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 import ctypes
 import ctypes.wintypes
@@ -13,8 +14,8 @@ import xml.etree.ElementTree as ElementTree
 
 from lib.shelllink import ShellLink
 from lib.urlfile import UrlFile
-from lib.utils import log
 
+import lib.utils as utils
 import lib.scrapers.scraper
 import lib.scrapers.playground
 import lib.scrapers.igdb
@@ -36,41 +37,7 @@ SCRAPER_SOURCE_PLAYGROUND       = 0x02
 SCRAPER_SOURCE_RAWG             = 0x03
 SCRAPER_SOURCE_MOBYGAMES        = 0x04
 
-class ShellExecuteInfo(ctypes.Structure):
-    _fields_ = (
-        ("cbSize", ctypes.wintypes.DWORD),
-        ("fMask", ctypes.c_ulong),
-        ("hwnd", ctypes.wintypes.HANDLE),
-        ("lpVerb", ctypes.c_char_p),
-        ("lpFile", ctypes.c_char_p),
-        ("lpParameters", ctypes.c_char_p),
-        ("lpDirectory", ctypes.c_char_p),
-        ("nShow", ctypes.c_int),
-        ("hInstApp", ctypes.wintypes.HINSTANCE),
-        ("lpIDList", ctypes.c_void_p),
-        ("lpClass", ctypes.c_char_p),
-        ("hKeyClass", ctypes.wintypes.HKEY),
-        ("dwHotKey", ctypes.wintypes.DWORD),
-        ("hIconOrMonitor", ctypes.wintypes.HANDLE),
-        ("hProcess", ctypes.wintypes.HANDLE),
-    )
-
-    def __init__(self, **kw):
-        ctypes.Structure.__init__(self)
-        self.cbSize = ctypes.sizeof(self)
-        for field_name, field_value in kw.items():
-            setattr(self, field_name, field_value)
-
-shellExecuteEx = ctypes.windll.shell32.ShellExecuteEx
-shellExecuteEx.restype = ctypes.wintypes.BOOL
-
-#waitForSingleObject = ctypes.windll.kernel32.WaitForSingleObject
-#waitForSingleObject.argtypes = (ctypes.wintypes.HANDLE, ctypes.wintypes.DWORD)
-#waitForSingleObject.restype = ctypes.wintypes.DWORD
-
-#closeHandle = ctypes.windll.kernel32.CloseHandle
-#closeHandle.argtypes = (ctypes.wintypes.HANDLE, )
-#closeHandle.restype = ctypes.wintypes.BOOL
+GAME_START_TIMEOUT              = 15
 
 class Game:
     def __init__(self, name):
@@ -153,18 +120,18 @@ class Game:
 
     def _readMetadata(self):
         if not xbmcvfs.exists(self.nfoFile):
-            log(LOG_TAG, xbmc.LOGINFO, 'file "{}" not exists, skipping', self.nfoFile)
+            utils.log(LOG_TAG, xbmc.LOGINFO, 'file "{}" not exists, skipping', self.nfoFile)
             return
 
         try:
             metadata = ElementTree.parse(self.nfoFile)
             root = metadata.getroot()
         except:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannnot open file "{}", skipping', self.nfoFile)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannnot open file "{}", skipping', self.nfoFile)
             return
 
         if root.tag != 'game':
-            log(LOG_TAG, xbmc.LOGERROR, 'wrong file "{}", skipping', self.nfoFile)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'wrong file "{}", skipping', self.nfoFile)
             return
 
         self._hasMetadata = True
@@ -215,14 +182,14 @@ class Game:
 
     def _writeMetadata(self):
         if not self._hasMetadata:
-            log(LOG_TAG, xbmc.LOGWARNING, 'game "{}" has no metadata, writing canceled', self._name)
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'game "{}" has no metadata, writing canceled', self._name)
             return False
 
         try:
             metadata = ElementTree.parse(xbmcvfs.translatePath(os.path.join(self.addonPath, 'resources', 'template.nfo')))
             root = metadata.getroot()
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot open "template.nfo" - {}', e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot open "template.nfo" - {}', e)
             return False
 
         root.find('title').text = self._title
@@ -268,7 +235,7 @@ class Game:
         try:
             metadata.write(self.nfoFile, 'utf-8', True)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot write "{}" - {}', self.nfoFile, e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot write "{}" - {}', self.nfoFile, e)
             return False
 
         return True
@@ -279,7 +246,7 @@ class Game:
         try:
             xbmcvfs.delete(self.nfoFile)
         except:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot delete metadata file "{}"', self.nfoFile)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot delete metadata file "{}"', self.nfoFile)
             return False
 
         self._hasMetadata = False
@@ -297,28 +264,6 @@ class Game:
         self._playgroundId = None
 
         return True
-
-    def _run(self):
-        result = False
-
-        try:
-            #ctypes.windll.shell32.ShellExecuteW(None, 'open', self._target, self._arguments, self._workingDir, 1)
-
-            #seInfo = ShellExecuteInfo(fMask = 0x00000140, lpVerb = 'open'.encode('utf-8'), lpFile = self._target.encode('utf-8'), lpParameters = self._arguments.encode('utf-8'), lpDirectory = self._workingDir.encode('utf-8'), nShow = 5)
-            seInfo = ShellExecuteInfo(fMask = 0x02000140, lpVerb = 'open'.encode('utf-8'), lpFile = self.lnkFile.encode('utf-8'), nShow = 5)
-            if shellExecuteEx(ctypes.byref(seInfo)): result = True
-        except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot start game "{}" - {}', self._name, e)
-
-        #if result:
-        #    try:
-                # wait for 30 seconds for game to run
-        #        waitForSingleObject(seInfo.hProcess, 10000)
-        #        closeHandle(seInfo.hProcess)
-        #    except:
-        #        pass
-
-        return result
 
     @property
     def name(self):
@@ -458,16 +403,36 @@ class Game:
         return listItem
 
     def start(self):
-        xbmc.audioSuspend()
-        log(LOG_TAG, xbmc.LOGDEBUG, 'xbmc audio disabled')
-
-        result = self._run()
-
-        xbmc.audioResume()
-        log(LOG_TAG, xbmc.LOGDEBUG, 'xbmc audio enabled')
-
         listitem = xbmcgui.ListItem(path = os.path.join(self.addonPath, 'resources', 'media', 'blank.png'))
+        result = False
+
+        xbmc.audioSuspend()
+        utils.log(LOG_TAG, xbmc.LOGINFO, 'xbmc audio disabled')
+
+        seInfo = utils.ShellExecuteInfo(fMask = utils.SEE_MASK_NOCLOSEPROCESS + utils.SEE_MASK_NOASYNC + utils.SEE_MASK_WAITFORINPUTIDLE, lpVerb = 'open'.encode('utf-8'), lpFile = self.lnkFile.encode('utf-8'), nShow = 5)
+        try:
+            if utils.shellExecuteEx(ctypes.byref(seInfo)): result = True
+        except Exception as e:
+            xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot start {} - {}'.format(self.name, e))
+            return result
+
         xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
+        try:
+            ret = utils.waitForSingleObject(seInfo.hProcess, GAME_START_TIMEOUT * 1000)
+            if ret == utils.WAIT_TIMEOUT:
+                utils.waitForSingleObject(seInfo.hProcess, utils.INFINITE)
+            elif ret == utils.WAIT_FAILED:
+                utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait for finish {} - {}'.format(self.name, e))
+                result = False
+            utils.closeHandle(seInfo.hProcess)
+        except Exception as e:
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait for finish {} - {}'.format(self.name, e))
+            #xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
+            result = False
+        
+        xbmc.audioResume()
+        utils.log(LOG_TAG, xbmc.LOGINFO, 'xbmc audio enabled')
 
         return result
 
@@ -503,7 +468,7 @@ class Addon(xbmcaddon.Addon):
 
     def _getSourceLinksList(self):
         result = []
-        log(LOG_TAG, xbmc.LOGDEBUG, 'getting link files from source "{}"', self.source)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'getting link files from source "{}"', self.source)
 
         for root, dirs, files in os.walk(xbmcvfs.translatePath(self.source)):
             for file in files:
@@ -511,17 +476,17 @@ class Addon(xbmcaddon.Addon):
                     game = Game(file[0:-4])
                     result.append(game)
                 except:
-                    log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                    utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
                     continue
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'found {} link files in source "{}"', len(result), self.source)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'found {} link files in source "{}"', len(result), self.source)
         return result
 
     def listGames(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'creating game list')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'creating game list')
 
         if self.source == '':
-            log(LOG_TAG, xbmc.LOGWARNING, 'source not set, initializing')
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'source not set, initializing')
             xbmcgui.Dialog().ok(self.getAddonInfo('name'), self.getLocalizedString(30901))
             xbmcgui.Window().close()
             self.openSettings()
@@ -533,7 +498,7 @@ class Addon(xbmcaddon.Addon):
         games = self._getSourceLinksList()
         for game in games:
             if not game.hasMetadata:
-                log(LOG_TAG, xbmc.LOGDEBUG, 'game "{}" has no metadata, skipping', game.name)
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'game "{}" has no metadata, skipping', game.name)
                 continue
 
             listItem = game.getListItem()
@@ -548,44 +513,44 @@ class Addon(xbmcaddon.Addon):
         xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
         xbmcplugin.endOfDirectory(self.handle, True, True, False)
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'game list created')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'game list created')
 
     def showInfo(self, name: str):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'showing game info for game "{}"', name)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'showing game info for game "{}"', name)
 
         try:
             game = Game(name)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
             return
 
         if not game.hasMetadata:
-            log(LOG_TAG, xbmc.LOGWARNING, 'game "{}" has no metadata', name)
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'game "{}" has no metadata', name)
             return
 
         xbmcgui.Dialog().info(game.getListItem())
 
     def startGame(self, name: str):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'starting game "{}"', name)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'starting game "{}"', name)
 
         try:
             game = Game(name)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
             return
 
         xbmc.Player().stop()
         game.start()
 
     def selectSource(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'selecting game source')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'selecting game source')
 
         result = xbmcgui.Dialog().browse(0, self.getLocalizedString(30001), 'files', defaultt = self.source)
         if result == self.source:
-            log(LOG_TAG, xbmc.LOGDEBUG, 'source not changed, canceled')
+            utils.log(LOG_TAG, xbmc.LOGDEBUG, 'source not changed, canceled')
             return
         if not self.setSettingString('source', result):
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot update source, canceled')
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot update source, canceled')
             return
         
         #saving changes immediatly
@@ -593,7 +558,7 @@ class Addon(xbmcaddon.Addon):
             metadata = ElementTree.parse(xbmcvfs.translatePath(os.path.join(self.getAddonInfo('profile'), 'settings.xml')))
             root = metadata.getroot()
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGWARNING, 'cannot open settings file, trying to create new one - ', e)
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot open settings file, trying to create new one - ', e)
             root = ElementTree.Element('settings', {'version': '2'})
 
         success = False
@@ -609,7 +574,7 @@ class Addon(xbmcaddon.Addon):
         try:
             tree.write(xbmcvfs.translatePath(os.path.join(self.getAddonInfo('profile'), 'settings.xml')), 'utf-8', False)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot write settings file - ', e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot write settings file - ', e)
             return
         
         if xbmcgui.Dialog().yesno(self.getAddonInfo('name'), self.getLocalizedString(30905), defaultbutton = xbmcgui.DLG_YESNO_YES_BTN):
@@ -617,7 +582,7 @@ class Addon(xbmcaddon.Addon):
             xbmc.executebuiltin('RunPlugin(plugin://plugin.program.windowslauncher/?action=update_source)')
 
     def updateSource(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'updating source metadata')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'updating source metadata')
 
         games = self._getSourceLinksList()
         if len(games) > 0:
@@ -630,7 +595,7 @@ class Addon(xbmcaddon.Addon):
                 
                 searchResults = self.scraper.search(game.title)
                 if searchResults is None:
-                    log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", skipping', game.title)
+                    utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", skipping', game.title)
                     continue
 
                 resultIndex = -1
@@ -654,25 +619,25 @@ class Addon(xbmcaddon.Addon):
                 if gameId != '':
                     metadata = self.scraper.getInfo(gameId)
                     if metadata is None:
-                        log(LOG_TAG, xbmc.LOGWARNING, 'cannot get metadata for game "{}", skipping', game.title)
+                        utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot get metadata for game "{}", skipping', game.title)
                     else:
                         if not game.saveMetadata(metadata):
-                            log(LOG_TAG, xbmc.LOGERROR, 'cannot save metadata for game "{}", skipping', game.title)
+                            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot save metadata for game "{}", skipping', game.title)
 
                 xbmc.sleep(500)
 
             progressDlg.close()
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'updating source metadata finished')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'updating source metadata finished')
         xbmc.executebuiltin('Container.Refresh()', False)
 
     def listFiles(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'creating file list')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'creating file list')
 
         if self.source == '':
             xbmcgui.Dialog().ok(self.getAddonInfo('name'), self.getLocalizedString(30901))
             xbmcplugin.endOfDirectory(self.handle, False, True, False)
-            log(LOG_TAG, xbmc.LOGWARNING, 'source not set, canceling')
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'source not set, canceling')
             return
 
         xbmcplugin.setContent(self.handle, 'files')
@@ -696,10 +661,10 @@ class Addon(xbmcaddon.Addon):
         
         xbmcplugin.endOfDirectory(self.handle, True, True, False)
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'file list created')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file list created')
 
     def clearSource(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'clearing source metadata')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'clearing source metadata')
 
         games = self._getSourceLinksList()
 
@@ -720,15 +685,15 @@ class Addon(xbmcaddon.Addon):
 
         xbmcgui.Dialog().ok(self.getAddonInfo('name'), self.getLocalizedString(30908))
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'source metadata cleared')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'source metadata cleared')
 
     def updateInfo(self, name: str):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'updating metadata for game "{}"', name)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'updating metadata for game "{}"', name)
 
         try:
             game = Game(name)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
             return
 
         searchName = game.name
@@ -742,7 +707,7 @@ class Addon(xbmcaddon.Addon):
 
         if searchResults is None:
             xbmcgui.Dialog().notification(self.getAddonInfo('name'), self.getLocalizedString(30913).format(self.scraper))
-            log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", canceling', searchName)
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", canceling', searchName)
             return
 
         while True:
@@ -759,7 +724,7 @@ class Addon(xbmcaddon.Addon):
 
                     if searchResults is None:
                         xbmcgui.Dialog().notification(self.getAddonInfo('name'), self.getLocalizedString(30913).format(self.scraper))
-                        log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", canceling', searchName)
+                        utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot get search results for game "{}", canceling', searchName)
                         return
             else:
                 for i, result in enumerate(searchResults):
@@ -787,37 +752,37 @@ class Addon(xbmcaddon.Addon):
 
         if metadata is None:
             xbmcgui.Dialog().notification(self.getAddonInfo('name'), self.getLocalizedString(30913).format(self.scraper))
-            log(LOG_TAG, xbmc.LOGWARNING, 'cannot get metadata for game "{}", skipping', game.title)
+            utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot get metadata for game "{}", skipping', game.title)
             return
 
         if not game.saveMetadata(metadata):
             xbmcgui.Dialog().notification(self.getAddonInfo('name'), self.getLocalizedString(30914))
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot save metadata for game "{}"', name)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot save metadata for game "{}"', name)
             return
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'metadata for game "{}" updated', name)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'metadata for game "{}" updated', name)
         xbmc.executebuiltin('Container.Refresh()', False)
 
     def removeGame(self, name: str):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'clearing metadata for game "{}"', name)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'clearing metadata for game "{}"', name)
 
         try:
             game = Game(name)
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'error get info for game "{}" - {}', name, e)
             return
 
         if game.removeMetadata():
             xbmc.executebuiltin('Container.Refresh()', False)
         else:
-            log(LOG_TAG, xbmc.LOGERROR, 'cannot remove metadata for game "{}"', name)
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot remove metadata for game "{}"', name)
 
     def showFiles(self):
         xbmc.executebuiltin('Dialog.Close(all, true)', True)
         xbmc.executebuiltin('ActivateWindow(10001, plugin://plugin.program.windowslauncher/?action=list_files, return)', False)
 
     def main(self):
-        log(LOG_TAG, xbmc.LOGDEBUG, 'entering main thread with params {}', self.params)
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'entering main thread with params {}', self.params)
 
         action = self.params['action'].lower()
         gameName = self.params.get('game', '').lower()
@@ -845,7 +810,7 @@ class Addon(xbmcaddon.Addon):
         else:
             return
 
-        log(LOG_TAG, xbmc.LOGDEBUG, 'exiting main thread')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'exiting main thread')
 
 addon = Addon()
 if __name__ == '__main__':

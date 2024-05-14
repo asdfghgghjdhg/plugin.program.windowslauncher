@@ -41,7 +41,7 @@ class RAWGScraper(GameScraper):
         params = {'search': parse.quote_plus(name), 'search_exact': 'true', 'platforms': '4', 'page_size': 100}
         data = self._query('games', params)
         
-        if not isinstance(data, dict) or not data.get('results') or not isinstance(data['results'], list):
+        if not isinstance(data, dict) or not isinstance(data.get('results'), list):
             log(LOG_TAG, xbmc.LOGERROR, 'wrong response from /games')
             return results
 
