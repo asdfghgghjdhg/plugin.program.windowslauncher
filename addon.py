@@ -1,6 +1,5 @@
 import sys
 import os
-import subprocess
 
 import ctypes
 import ctypes.wintypes

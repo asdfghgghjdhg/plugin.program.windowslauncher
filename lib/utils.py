@@ -52,12 +52,3 @@ closeHandle.restype = ctypes.wintypes.BOOL
 
 def log(tag: str, level: int, msg: str, *args):
     xbmc.log(tag + ': ' + msg.format(*args), level)
-
-def startandwait(target: str, args: str = '', directory: str = ''):
-    result = False
-
-    mask = SEE_MASK_NOCLOSEPROCESS + SEE_MASK_NOASYNC + SEE_MASK_WAITFORINPUTIDLE
-    seInfo = ShellExecuteInfo(fMask = mask, lpVerb = 'open'.encode('utf-8'), lpFile = target.encode('utf-8'), lpParameters = args.encode('utf-8'), lpDirectory = directory.encode('utf-8'), nShow = 5)
-    if shellExecuteEx(ctypes.byref(seInfo)): result = True
-
-    return result
