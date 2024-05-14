@@ -1,31 +1,28 @@
 import sys
 import os
-
-import ctypes
-import ctypes.wintypes
-
 import re
-import json
-import requests
-import html
-import urllib.parse as Parse
+import ctypes
+
 import xml.etree.ElementTree as ElementTree
-
-from lib.shelllink import ShellLink
-from lib.urlfile import UrlFile
-
-import lib.utils as utils
-import lib.scrapers.scraper
-import lib.scrapers.playground
-import lib.scrapers.igdb
-import lib.scrapers.rawg
-import lib.scrapers.mobygames
 
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
 import xbmc
 import xbmcvfs
+
+import lib.utils as utils
+
+from urllib.parse import parse_qsl
+
+from lib.shelllink import ShellLink
+from lib.urlfile import UrlFile
+
+from lib.scrapers.scraper import GameScraper
+from lib.scrapers.igdb import IGDBScraper
+from lib.scrapers.playground import PGScraper
+from lib.scrapers.rawg import RAWGScraper
+from lib.scrapers.mobygames import MGScraper
 
 #import web_pdb; web_pdb.set_trace()
 
@@ -440,7 +437,7 @@ class Addon(xbmcaddon.Addon):
         self.url = sys.argv[0]
         self.handle = int(sys.argv[1])
 
-        self.params = dict(Parse.parse_qsl(sys.argv[2][1:]))
+        self.params = dict(parse_qsl(sys.argv[2][1:]))
         if not self.params: self.params = {'action': 'list_games'}
         if not self.params.get('action'): self.params['action'] = 'list_games'
 
@@ -453,15 +450,15 @@ class Addon(xbmcaddon.Addon):
 
         selectedScraper = self.getSettingInt('scraper')
         if selectedScraper == SCRAPER_SOURCE_PLAYGROUND:
-            self.scraper = lib.scrapers.playground.PGScraper()
+            self.scraper = PGScraper()
         elif selectedScraper == SCRAPER_SOURCE_IGDB:
-            self.scraper = lib.scrapers.igdb.IGDBScraper(self.getSettingString('twitch_client_id'), self.getSettingString('twitch_client_secret'))
+            self.scraper = IGDBScraper(self.getSettingString('twitch_client_id'), self.getSettingString('twitch_client_secret'))
         elif selectedScraper == SCRAPER_SOURCE_RAWG:
-            self.scraper = lib.scrapers.rawg.RAWGScraper()
+            self.scraper = RAWGScraper()
         elif selectedScraper == SCRAPER_SOURCE_MOBYGAMES:
-            self.scraper = lib.scrapers.mobygames.MGScraper()
+            self.scraper = MGScraper()
         else:
-            self.scraper = lib.scrapers.scraper.GameScraper()
+            self.scraper = GameScraper()
         
         return super().__init__(id = None)
 
