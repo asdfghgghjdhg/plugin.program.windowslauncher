@@ -104,5 +104,14 @@
 				</setting>
 			</group>
 		</category>
+		<category id="game" label="30024" help="">
+			<group id="3">
+				<setting id="show_running_window" type="boolean" label="30025" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+				</setting>
+			</group>
+		</category>
     </section>
 </settings>

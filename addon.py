@@ -398,7 +398,7 @@ class Game:
 
         return listItem
 
-    def start(self):
+    def start(self, showDialog = False):
         listitem = xbmcgui.ListItem(path = os.path.join(self.addonPath, 'resources', 'media', 'blank.png'))
         result = False
 
@@ -414,6 +414,12 @@ class Game:
             return result
 
         xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
+        dlg = None
+        if showDialog:
+            dlg = xbmcgui.DialogProgress()
+            dlg.create(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(30917).format(self._name))
+            dlg.update(100, xbmcaddon.Addon().getLocalizedString(30917).format(self._title))
+
         try:
             ret = utils.waitForSingleObject(seInfo.hProcess, GAME_START_TIMEOUT * 1000)
             if ret == utils.WAIT_TIMEOUT:
@@ -424,8 +430,12 @@ class Game:
             utils.closeHandle(seInfo.hProcess)
         except Exception as e:
             utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait for finish {} - {}'.format(self.name, e))
-            #xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
             result = False
+        
+        if showDialog:
+            while not dlg.iscanceled():
+                xbmc.sleep(100)
+            dlg.close()
         
         xbmc.audioResume()
         utils.log(LOG_TAG, xbmc.LOGINFO, 'xbmc audio enabled')
@@ -536,7 +546,7 @@ class Addon(xbmcaddon.Addon):
             return
 
         xbmc.Player().stop()
-        game.start()
+        game.start(self.getSettingBool('show_running_window'))
 
     def selectSource(self):
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'selecting game source')

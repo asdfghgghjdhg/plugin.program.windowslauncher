@@ -80,6 +80,14 @@ msgctxt "#30023"
 msgid "MobyGames.com"
 msgstr ""
 
+msgctxt "#30024"
+msgid "Game"
+msgstr "Игры"
+
+msgctxt "#30025"
+msgid "Show Dialog Window while Game is running"
+msgstr "Показывать диалоговое окно пока игра запущена"
+
 msgctxt "#30901"
 msgid "Games Library Source not set\nPlease set Games Library Source in Addon Settings"
 msgstr "Источник для Игротеки не задан\nПожалуйста, укажите источник для Игротеки в настройках Дополнения"
@@ -143,3 +151,7 @@ msgstr "Поиск\n{}"
 msgctxt "#30916"
 msgid "Getting Data\n{}"
 msgstr "Получение данных\n{}"
+
+msgctxt "#30917"
+msgid "{}\nMaybe still Running\nPress \"Cancel\" to return to KODI"
+msgstr "{}\nВозможно, еще запущена\nНажмите \"Отмена\" для возвращения в KODI"
