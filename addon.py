@@ -409,7 +409,7 @@ class Game:
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'xbmc audio disabled')
 
         seInfo = utils.ShellExecuteInfo(fMask = utils.SEE_MASK_NOCLOSEPROCESS + utils.SEE_MASK_WAITFORINPUTIDLE + utils.SEE_MASK_FLAG_NO_UI, lpFile = self.lnkFile.encode('utf-8'), nShow = utils.SW_SHOWNORMAL)
-        if utils.shellExecuteEx(ctypes.byref(seInfo)) and seInfo.hInstApp > 32 and seInfo.hProcess > 0:
+        if utils.shellExecuteEx(ctypes.byref(seInfo)) and seInfo.hInstApp > 32:
             utils.log(LOG_TAG, xbmc.LOGDEBUG, '{} started successfuly'.format(self._name))
             result = True
         else:
@@ -424,7 +424,7 @@ class Game:
                 dlg.create(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(30917).format(self._name))
                 dlg.update(100, xbmcaddon.Addon().getLocalizedString(30917).format(self._title))
 
-            while True:
+            while seInfo.hProcess:
                 xbmc.sleep(1000)
                 exitCode = ctypes.wintypes.DWORD()
                 if not utils.getExitCodeProcess(seInfo.hProcess, ctypes.byref(exitCode)):
