@@ -14,6 +14,7 @@ import xbmcvfs
 import lib.utils as utils
 
 from urllib.parse import parse_qsl
+from pathlib import Path
 
 from lib.shelllink import ShellLink
 from lib.urlfile import UrlFile
@@ -45,25 +46,20 @@ class Game:
         if not name or name == '': raise ValueError('Invalid game name')
 
         link = None
-        for root, dirs, files in os.walk(xbmcvfs.translatePath(self.sourcePath)):
-            for file in files:
-                extension = file[-4:]
-                if (extension != '.lnk' and extension != '.url') or file.lower()[0:-4] != name.lower():
-                    continue
-
-                if extension == '.lnk':
-                    try:
-                        link = ShellLink(xbmcvfs.translatePath(os.path.join(self.sourcePath, file)))
-                    except:
-                        continue
-
-                if extension == '.url':
-                    try:
-                        link = UrlFile(xbmcvfs.translatePath(os.path.join(self.sourcePath, file)))
-                    except:
-                        continue
-
-                break
+        if xbmcvfs.exists(os.path.join(self.sourcePath, name + '.lnk')):
+            try:
+                file = xbmcvfs.translatePath(os.path.join(self.sourcePath, name + '.lnk'))
+                link = ShellLink(Path(file).resolve())
+            except:
+                raise ValueError('Invalid game name')
+        elif xbmcvfs.exists(os.path.join(self.sourcePath, name + '.url')):
+            try:
+                file = xbmcvfs.translatePath(os.path.join(self.sourcePath, name + '.url'))
+                link = UrlFile(Path(file).resolve())
+            except:
+                raise ValueError('Invalid game name')
+        else:
+            raise ValueError('Invalid game name')
 
         if not link: raise ValueError('Invalid game name')
 
@@ -482,22 +478,6 @@ class Addon(xbmcaddon.Addon):
         
         return super().__init__(id = None)
 
-    def _getSourceLinksList(self):
-        result = []
-        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'getting link files from source "{}"', self.source)
-
-        for root, dirs, files in os.walk(xbmcvfs.translatePath(self.source)):
-            for file in files:
-                try:
-                    game = Game(file[0:-4])
-                    result.append(game)
-                except:
-                    utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
-                    continue
-
-        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'found {} link files in source "{}"', len(result), self.source)
-        return result
-
     def listGames(self):
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'creating game list')
 
@@ -511,12 +491,21 @@ class Addon(xbmcaddon.Addon):
         xbmcplugin.setContent(self.handle, self.contentType)
         xbmcplugin.setPluginCategory(self.handle, self.getAddonInfo('name'))
 
-        games = self._getSourceLinksList()
-        for game in games:
-            if not game.hasMetadata:
-                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'game "{}" has no metadata, skipping', game.name)
+        games = []
+        dirs, files = xbmcvfs.listdir(self.libraryPath)
+        for file in files:
+            if file[-4:] != '.nfo':
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not metadata file, skipping', file)
+                continue
+                
+            try:
+                game = Game(file[0:-4])
+                games.append(game)
+            except:
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
                 continue
 
+        for game in games:
             listItem = game.getListItem()
             
             menuItemShowInfo = (self.getLocalizedString(30902), 'RunPlugin({}?action=show_info&game={})'.format(self.url, game.name))
@@ -660,7 +649,20 @@ class Addon(xbmcaddon.Addon):
         xbmcplugin.setContent(self.handle, 'files')
         xbmcplugin.setPluginCategory(self.handle, self.getAddonInfo('name'))
 
-        games = self._getSourceLinksList()
+        games = []
+        dirs, files = xbmcvfs.listdir(self.source)
+        for file in files:
+            if file[-4:] != '.lnk' and file[-4:] != '.url':
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
+
+            try:
+                game = Game(file[0:-4])
+                games.append(game)
+            except:
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
+
         for game in games:
             listItem = game.getListItem()
             listItem.setProperty('IsPlayable', 'False')
