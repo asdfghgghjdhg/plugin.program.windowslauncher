@@ -154,4 +154,8 @@ msgstr "Получение данных\n{}"
 
 msgctxt "#30917"
 msgid "{}\nMaybe still Running\nPress \"Cancel\" to return to KODI"
-msgstr "{}\nВозможно, еще запущена\nНажмите \"Отмена\" для возвращения в KODI"
+msgstr "{}\nВозможно еще запущена\nНажмите \"Отмена\" для возвращения в KODI"
+
+msgctxt "#30918"
+msgid "Cannot start\n{}\nSomething went wrong"
+msgstr "Невозможно запустить\n{}\nЧто-то пошло не так"

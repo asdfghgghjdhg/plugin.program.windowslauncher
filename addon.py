@@ -67,8 +67,8 @@ class Game:
 
         if not link: raise ValueError('Invalid game name')
 
-        if isinstance(link, ShellLink) and not link.shellLinkHeader.linkFlags.hasLinkInfo:
-            raise ValueError('Invalid game name')
+        #if isinstance(link, ShellLink) and not link.shellLinkHeader.linkFlags.hasLinkInfo:
+        #    raise ValueError('Invalid game name')
         #if not link.linkInfo.linkInfoFlags.volumeIDAndLocalBasePath:
         #    raise ValueError('Invalid game name')
         #if link.linkInfo.localBasePath == '':
@@ -81,10 +81,13 @@ class Game:
         self._workingDir = ''
 
         if isinstance(link, ShellLink):
-            if link.shellLinkHeader.linkFlags.hasName:
-                self._title = link.stringData.nameString
+            #if link.shellLinkHeader.linkFlags.hasName:
+            #    self._title = link.stringData.nameString
 
-            self._target = link.linkInfo.localBasePath
+            if link.shellLinkHeader.linkFlags.hasLinkInfo:
+                self._target = link.linkInfo.localBasePath
+            elif link.shellLinkHeader.linkFlags.hasName:
+                self._target = link.stringData.nameString
 
             if link.stringData.commandLineArguments: self._arguments = link.stringData.commandLineArguments
             if link.stringData.workingDir: self._workingDir = link.stringData.workingDir
@@ -403,42 +406,49 @@ class Game:
         result = False
 
         xbmc.audioSuspend()
-        utils.log(LOG_TAG, xbmc.LOGINFO, 'xbmc audio disabled')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'xbmc audio disabled')
 
-        seInfo = utils.ShellExecuteInfo(fMask = utils.SEE_MASK_NOCLOSEPROCESS + utils.SEE_MASK_NOASYNC + utils.SEE_MASK_WAITFORINPUTIDLE, lpVerb = 'open'.encode('utf-8'), lpFile = self.lnkFile.encode('utf-8'), nShow = 5)
-        try:
-            if utils.shellExecuteEx(ctypes.byref(seInfo)): result = True
-        except Exception as e:
-            xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
-            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot start {} - {}'.format(self.name, e))
-            return result
+        seInfo = utils.ShellExecuteInfo(fMask = utils.SEE_MASK_NOCLOSEPROCESS + utils.SEE_MASK_WAITFORINPUTIDLE + utils.SEE_MASK_FLAG_NO_UI, lpFile = self.lnkFile.encode('utf-8'), nShow = utils.SW_SHOWNORMAL)
+        if utils.shellExecuteEx(ctypes.byref(seInfo)) and seInfo.hInstApp > 32 and seInfo.hProcess > 0:
+            utils.log(LOG_TAG, xbmc.LOGDEBUG, '{} started successfuly'.format(self._name))
+            result = True
+        else:
+            utils.log(LOG_TAG, xbmc.LOGERROR, 'cannot start {} - error code {}'.format(self.name, seInfo.hInstApp))
 
-        xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
-        dlg = None
-        if showDialog:
-            dlg = xbmcgui.DialogProgress()
-            dlg.create(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(30917).format(self._name))
-            dlg.update(100, xbmcaddon.Addon().getLocalizedString(30917).format(self._title))
+        #xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
 
-        try:
-            ret = utils.waitForSingleObject(seInfo.hProcess, GAME_START_TIMEOUT * 1000)
-            if ret == utils.WAIT_TIMEOUT:
-                utils.waitForSingleObject(seInfo.hProcess, utils.INFINITE)
-            elif ret == utils.WAIT_FAILED:
-                utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait for finish {} - {}'.format(self.name, e))
-                result = False
+        if result:
+            dlg = None
+            if showDialog:
+                dlg = xbmcgui.DialogProgress()
+                dlg.create(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(30917).format(self._name))
+                dlg.update(100, xbmcaddon.Addon().getLocalizedString(30917).format(self._title))
+
+            while True:
+                xbmc.sleep(1000)
+                exitCode = ctypes.wintypes.DWORD()
+                if not utils.getExitCodeProcess(seInfo.hProcess, ctypes.byref(exitCode)):
+                    utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait to finish {}'.format(self.name))
+                    break
+                if exitCode.value != utils.STILL_ACTIVE:
+                    utils.log(LOG_TAG, xbmc.LOGINFO, '{} finished with code {}'.format(self.name, exitCode.value))
+                    break
+
+            #utils.waitForSingleObject(seInfo.hProcess, utils.INFINITE)
+            #elif ret == utils.WAIT_FAILED:
+            #    utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait to finish {}'.format(self.name))
+
             utils.closeHandle(seInfo.hProcess)
-        except Exception as e:
-            utils.log(LOG_TAG, xbmc.LOGWARNING, 'cannot wait for finish {} - {}'.format(self.name, e))
-            result = False
         
-        if showDialog:
-            while not dlg.iscanceled():
-                xbmc.sleep(100)
-            dlg.close()
+            if showDialog:
+                while not dlg.iscanceled():
+                    xbmc.sleep(100)
+                dlg.close()
         
+        xbmcplugin.setResolvedUrl(self.addonHandle, result, listitem)
+
         xbmc.audioResume()
-        utils.log(LOG_TAG, xbmc.LOGINFO, 'xbmc audio enabled')
+        utils.log(LOG_TAG, xbmc.LOGDEBUG, 'xbmc audio enabled')
 
         return result
 
@@ -546,7 +556,8 @@ class Addon(xbmcaddon.Addon):
             return
 
         xbmc.Player().stop()
-        game.start(self.getSettingBool('show_running_window'))
+        if not game.start(self.getSettingBool('show_running_window')):
+            xbmcgui.Dialog().ok(self.getAddonInfo('name'), self.getLocalizedString(30918).format(game.title))
 
     def selectSource(self):
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'selecting game source')
