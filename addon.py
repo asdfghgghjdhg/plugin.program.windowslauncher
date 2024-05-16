@@ -273,6 +273,10 @@ class Game:
         return xbmcvfs.translatePath(os.path.join(self.metadataPath, self._name + '.nfo'))
 
     @property
+    def target(self):
+        return self._target
+
+    @property
     def title(self):
         return self._title
 
@@ -313,8 +317,8 @@ class Game:
         return self._fanarts
 
     @property
-    def ratings(self):
-        return self._ratings
+    def rating(self):
+        return self._rating
 
     @property
     def scraperId(self):
@@ -502,7 +506,7 @@ class Addon(xbmcaddon.Addon):
                 game = Game(file[0:-4])
                 games.append(game)
             except:
-                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file[0:-4])
                 continue
 
         for game in games:
@@ -590,7 +594,33 @@ class Addon(xbmcaddon.Addon):
     def updateSource(self):
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'updating source metadata')
 
-        games = self._getSourceLinksList()
+        dirs, files = xbmcvfs.listdir(self.libraryPath)
+        for file in files:
+            if file[-4:] != '.nfo':
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not metadata file, skipping', file)
+                continue
+                
+            try:
+                game = Game(file[0:-4])
+            except:
+                utils.log(LOG_TAG, xbmc.LOGINFO, 'cannot open "{}" link file, removing from library', file[0:-4])
+                xbmcvfs.delete(os.path.join(self.libraryPath), file)
+                continue
+
+        games = []
+        dirs, files = xbmcvfs.listdir(self.source)
+        for file in files:
+            if file[-4:] != '.lnk' and file[-4:] != '.url':
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
+
+            try:
+                game = Game(file[0:-4])
+                games.append(game)
+            except:
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
+
         if len(games) > 0:
             progressDlg = xbmcgui.DialogProgressBG()
             progressDlg.create(self.getLocalizedString(30909), '')
@@ -685,7 +715,19 @@ class Addon(xbmcaddon.Addon):
     def clearSource(self):
         utils.log(LOG_TAG, xbmc.LOGDEBUG, 'clearing source metadata')
 
-        games = self._getSourceLinksList()
+        games = []
+        dirs, files = xbmcvfs.listdir(self.source)
+        for file in files:
+            if file[-4:] != '.lnk' and file[-4:] != '.url':
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
+
+            try:
+                game = Game(file[0:-4])
+                games.append(game)
+            except:
+                utils.log(LOG_TAG, xbmc.LOGDEBUG, 'file "{}" is not link file, skipping', file)
+                continue
 
         if len(games) > 0:
             if not xbmcgui.Dialog().yesno(self.getAddonInfo('name'), self.getLocalizedString(30907)): return
