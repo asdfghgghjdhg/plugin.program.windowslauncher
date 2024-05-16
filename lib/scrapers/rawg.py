@@ -5,7 +5,7 @@ import xbmc
 from datetime import datetime, timedelta
 from urllib import parse
 from lib.utils import log
-from lib.scrapers.scraper import GameScraper
+from .scraper import GameScraper
 
 LOG_TAG                         = 'rawg.io'
 API_KEY                         = 'da1483483c1c497e8e71d65f11094623'
@@ -109,7 +109,7 @@ class RAWGScraper(GameScraper):
         if data.get('background_image'):
             info['thumbs'] = dict()
             info['thumbs']['thumb'] = data['background_image'].strip()
-            info['thumbs']['poster'] = data['background_image'].strip()
+            #info['thumbs']['poster'] = data['background_image'].strip()
             info['thumbs']['fanart'] = data['background_image'].strip()
 
         if data.get('background_image_additional'):

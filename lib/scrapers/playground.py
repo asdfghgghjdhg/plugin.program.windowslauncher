@@ -6,7 +6,7 @@ import xbmc
 
 from urllib import parse
 from lib.utils import log
-from lib.scrapers.scraper import GameScraper
+from .scraper import GameScraper
 
 LOG_TAG                         = 'playground.ru'
 

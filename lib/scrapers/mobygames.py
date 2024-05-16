@@ -7,7 +7,7 @@ import xbmc
 from datetime import datetime, timedelta
 from urllib import parse
 from lib.utils import log
-from lib.scrapers.scraper import GameScraper
+from .scraper import GameScraper
 
 LOG_TAG                         = 'mobygames.com'
 API_KEY                         = 'moby_WJ7m8xxjspSAuMWgROjfN5TO0ed'

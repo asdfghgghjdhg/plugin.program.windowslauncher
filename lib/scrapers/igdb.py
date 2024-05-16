@@ -7,7 +7,7 @@ import xbmcgui
 from datetime import datetime, timedelta
 from urllib import parse
 from lib.utils import log
-from lib.scrapers.scraper import GameScraper
+from .scraper import GameScraper
 
 LOG_TAG                         = 'igdb.com'
 
