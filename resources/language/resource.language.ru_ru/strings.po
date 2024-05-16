@@ -82,7 +82,7 @@ msgstr ""
 
 msgctxt "#30024"
 msgid "Game"
-msgstr "Игры"
+msgstr "Игра"
 
 msgctxt "#30025"
 msgid "Show Dialog Window while Game is running"
