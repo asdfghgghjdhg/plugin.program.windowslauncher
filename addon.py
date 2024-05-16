@@ -12,6 +12,7 @@ import xbmc
 import xbmcvfs
 
 import lib.utils as utils
+import lib.scrapers as scrapers
 
 from urllib.parse import parse_qsl
 from pathlib import Path
@@ -19,22 +20,14 @@ from pathlib import Path
 from lib.shelllink import ShellLink
 from lib.urlfile import UrlFile
 
-from lib.scrapers.scraper import GameScraper
-from lib.scrapers.igdb import IGDBScraper
-from lib.scrapers.playground import PGScraper
-from lib.scrapers.rawg import RAWGScraper
-from lib.scrapers.mobygames import MGScraper
-
 #import web_pdb; web_pdb.set_trace()
 
 LOG_TAG                         = 'plugin.program.windowslauncher'
 
-SCRAPER_SOURCE_IGDB             = 0x01
-SCRAPER_SOURCE_PLAYGROUND       = 0x02
-SCRAPER_SOURCE_RAWG             = 0x03
-SCRAPER_SOURCE_MOBYGAMES        = 0x04
-
-GAME_START_TIMEOUT              = 15
+SCRAPER_SOURCE_IGDB             = 1
+SCRAPER_SOURCE_PLAYGROUND       = 2
+SCRAPER_SOURCE_RAWG             = 3
+SCRAPER_SOURCE_MOBYGAMES        = 4
 
 class Game:
     def __init__(self, name):
@@ -470,15 +463,15 @@ class Addon(xbmcaddon.Addon):
 
         selectedScraper = self.getSettingInt('scraper')
         if selectedScraper == SCRAPER_SOURCE_PLAYGROUND:
-            self.scraper = PGScraper()
+            self.scraper = scrapers.PGScraper()
         elif selectedScraper == SCRAPER_SOURCE_IGDB:
-            self.scraper = IGDBScraper(self.getSettingString('twitch_client_id'), self.getSettingString('twitch_client_secret'))
+            self.scraper = scrapers.IGDBScraper(self.getSettingString('twitch_client_id'), self.getSettingString('twitch_client_secret'))
         elif selectedScraper == SCRAPER_SOURCE_RAWG:
-            self.scraper = RAWGScraper()
+            self.scraper = scrapers.RAWGScraper()
         elif selectedScraper == SCRAPER_SOURCE_MOBYGAMES:
-            self.scraper = MGScraper()
+            self.scraper = scrapers.MGScraper()
         else:
-            self.scraper = GameScraper()
+            self.scraper = scrapers.GameScraper()
         
         return super().__init__(id = None)
 
