@@ -1,9 +1,10 @@
 import os
 import re
+from pathlib import Path
 
 class UrlFile:
     def __init__(self, urlFile: str):
-        self._urlPath = os.path.abspath(urlFile)
+        self._urlPath = os.path.abspath(Path(urlFile).resolve())
         self._data = dict()
 
         file = open(urlFile, mode = 'r')

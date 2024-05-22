@@ -4,6 +4,7 @@ import os
 import sys
 import locale
 import struct
+from pathlib import Path
 from uuid import UUID
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -1425,7 +1426,7 @@ class ExtraData:
 
 class ShellLink:
     def __init__(self, lnkFile):
-        self._linkPath = os.path.abspath(lnkFile)
+        self._linkPath = os.path.abspath(Path(lnkFile).resolve())
         
         file = open(lnkFile, mode = 'rb')
 

@@ -21,8 +21,8 @@ msgid "      Update Games Library"
 msgstr "      Обновить Игротеку"
 
 msgctxt "#30003"
-msgid "      Show Files"
-msgstr "      Просмотр файлов"
+msgid "      Show Shortcuts"
+msgstr "      Просмотр ярлыков"
 
 msgctxt "#30004"
 msgid "      Clear Games Library"
@@ -159,3 +159,15 @@ msgstr "{}\nВозможно еще запущена\nНажмите \"Отме�
 msgctxt "#30918"
 msgid "Cannot start\n{}\nSomething went wrong"
 msgstr "Невозможно запустить\n{}\nЧто-то пошло не так"
+
+msgctxt "#30919"
+msgid "Error removing {} from Games Library"
+msgstr "Ошибка при удалении {} из Игротеки"
+
+msgctxt "#30920"
+msgid "Windows Shortcuts"
+msgstr "Ярлыки Windows"
+
+msgctxt "#30921"
+msgid "Start"
+msgstr "Запустить"

@@ -21,7 +21,7 @@ msgid "      Update Games Library"
 msgstr ""
 
 msgctxt "#30003"
-msgid "      Show Files"
+msgid "      Show Shortcuts"
 msgstr ""
 
 msgctxt "#30004"
@@ -158,4 +158,16 @@ msgstr ""
 
 msgctxt "#30918"
 msgid "Cannot start\n{}\nSomething went wrong"
+msgstr ""
+
+msgctxt "#30919"
+msgid "Error removing {} from Games Library"
+msgstr ""
+
+msgctxt "#30920"
+msgid "Windows Shortcuts"
+msgstr ""
+
+msgctxt "#30921"
+msgid "Start"
 msgstr ""

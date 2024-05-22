@@ -26,6 +26,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="addon.py" />
+    <Compile Include="lib\games.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lib\scrapers\mobygames.py" />
     <Compile Include="lib\scrapers\__init__.py">
       <SubType>Code</SubType>

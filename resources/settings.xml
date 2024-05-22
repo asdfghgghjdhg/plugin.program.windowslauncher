@@ -11,7 +11,7 @@
 					</constraints>
 					<control type="button" format="action">
 						<data>RunPlugin(plugin://plugin.program.windowslauncher/?action=select_source)</data>
-						<close>false</close>
+						<close>true</close>
 					</control>
                 </setting>
 				<setting id="update_source" type="action" label="30002" help="">
@@ -21,7 +21,7 @@
 					</dependencies>
 					<data>RunPlugin(plugin://$ID/?action=update_source)</data>
 					<control type="button" format="action">
-						<close>true</close>
+						<close>false</close>
 					</control>
 				</setting>
 				<setting id="list_files" type="action" label="30003" help="">
