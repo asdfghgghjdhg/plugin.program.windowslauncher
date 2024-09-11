@@ -54,87 +54,77 @@ class PGScraper(GameScraper):
         info = {'id': id, 'title': None, 'altTitle': None, 'platform': None, 'year': None, 'developer': None, 'publisher': None, 'genres': None, 'overview': None, 'rating': None, 'thumbs': None, 'fanarts': None}
         log(LOG_TAG, xbmc.LOGDEBUG, 'scraping metadata for game "{}"', id)
         
-        query = 'https://www.playground.ru/gallery/{}/'.format(id)
+        query = 'https://www.playground.ru/api/game.get?game_slug={}'.format(id)
         try:
             response = requests.get(query)
-            if not response.ok:
+            if response.ok:
+                data = json.loads(response.text)
+            else:
                 log(LOG_TAG, xbmc.LOGERROR, 'failed to get response from {}', query)
-                return None
+                return results
         except Exception as e:
-            log(LOG_TAG, xbmc.LOGERROR, 'failed to get response from {} - {}', query, e)
-            return None
-        
-        gameInfo = re.search('<div class="modal-content" style="background-image: url\(.+\)">[\s\S]*?(?=<script>)', response.text)
-        if not gameInfo:
-            log(LOG_TAG, xbmc.LOGERROR, 'wrong response from {}', query)
-            return None
+            log(xbmc.LOGERROR, 'failed to get response from {} - {}', query, e)
+            return results
 
-        title = re.findall('<div class="game-title">\s+<a href=".+">\s+(.+)\s+(<span class="game-title-alt">(.+)</span>)?\s+</a>', gameInfo.group(0))
-        if title:
-            info['title'] = title[0][0].strip()
-            info['altTitle'] = title[0][2].strip()
-        else:
+        if not isinstance(data, dict):
+            log(LOG_TAG, xbmc.LOGERROR, 'wrong response from {}', query)
+            return
+
+        info['title'] = data.get('name', '').strip()
+        if not info['title']:
             log(LOG_TAG, xbmc.LOGERROR, 'wrong response from {}', query)
             return None
 
         info['thumbs'] = dict()
-        poster = re.findall('<div class="modal-content" style="background-image: url\((.+)\)">', gameInfo.group(0))
-        if poster:
-            info['thumbs']['poster'] = poster[0].strip()
-        thumb = re.findall('<div class="game-poster">[\s\S]+<img.+src="(.+?)"', gameInfo.group(0))
-        if thumb:
-            info['thumbs']['thumb'] = thumb[0].strip()
+        info['thumbs']['poster'] = data.get('image', '').strip()
+        info['thumbs']['thumb'] = data.get('image', '').strip()
 
         info['genres'] = []
-        genres = re.findall('<a class="item" href="\/games\/.+?">(.+?)<\/a>', gameInfo.group(0))
-        if genres:
-            for genre in genres:
-                info['genres'].append(genre.strip())
-        if len(info['genres']) == 0: info['genres'] = None
+        tags = data.get('tags')
+        if isinstance(tags, list):
+            for element in tags:
+                if element.get('name'):
+                    info['genres'].append(element.get('name').strip())
 
-        dates = re.findall('<div class="release-item">\s+?<span class="date">([\s\S]+?)<\/span>\s+<a class="platform-item (.+)" href="\/games\/.+">', gameInfo.group(0))
-        if dates:
-            for platform in dates:
-                if platform[1].strip() == 'pc':
-                    try:
-                        info['year'] = int(platform[0].strip()[-4:])
-                        info['platform'] = 'PC'
-                    except:
-                        pass
+        if data.get('releases') and data.get('releases').get('pc') and data.get('releases').get('pc').get('date'):
+            info['year'] = int(data.get('releases').get('pc').get('date').strip()[1:4])
+            info['platform'] = 'PC'
 
-        developer = re.findall('<a title="все игры этого разработчика"\s+href="\/games\?company=.+">\s+<span>(.+?)<\/span>', gameInfo.group(0))
-        if developer:
-            info['developer'] = developer[0].strip()
-
-        publisher = re.findall('<a title="все игры этого издателя"\s+href="\/games\?company=.+">\s+<span>(.+?)<\/span>', gameInfo.group(0))
-        if publisher:
-            info['publisher'] = publisher[0].strip()
+        if data.get('developer'):
+            info['developer'] = data.get('developer').get('name', '').strip()
+        if data.get('publisher'):
+            info['publisher'] = data.get('publisher').get('name', '').strip()
 
         info['rating'] = dict()
-        rating = re.findall('<span class="value">\s*(.+?)\s*<\/span>\s+Пользователи\s*<span>\s*(.+?)\s*<\/span>', gameInfo.group(0))
-        if rating:
-            try:
-                info['rating']['rating'] = float(rating[0][0].strip()[0:-3])
-                info['rating']['type'] = 'PG'
-                info['rating']['votes'] = int(rating[0][1].strip().replace(' ', ''))
-            except: pass
+        try:
+            info['rating']['rating'] = float(data.get('rating').get('value'))
+            info['rating']['type'] = 'PG'
+            info['rating']['votes'] = int(data.get('rating').get('count'))
+        except: pass
         if len(info['rating']) == 0:
             info['rating'] = None
         elif not info['rating'].get('votes'):
             info['rating']['votes'] = 0
 
-        plot = re.findall('<div class="description-wrapper">([\s\S]+?)<\/div>', gameInfo.group(0))
-        if plot:
-            plot = re.sub('<.*?>', '', plot[0].strip().replace('<br>', '\n').replace('<br/>', '\n'))
-            info['overview'] = html.unescape(plot)
-
+        desc = data.get('text', '').strip().replace('<br>', '\n').replace('<br/>', '\n')
+        info['overview'] = html.unescape(re.sub('<.*?>', '', desc))
+        
         info['fanarts'] = []
-        screenshotsBlock = re.search('<div class="module clearfix screenshots-module">(.+?)(?=<\/div><\/div><\/div>)', response.text)
-        if screenshotsBlock:
-            screenshots = re.findall('<div class="gallery-item thumb"><a data-fancybox="gallery" href="(.+?)".+?<img src="(.+?)" alt="', screenshotsBlock.group(0))
-            if screenshots:
-                for screenshot in screenshots:
-                    info['fanarts'].append({'image': screenshot[0], 'preview': screenshot[1]})
+        query = 'https://www.playground.ru/gallery/{}/'.format(id)
+        try:
+            response = requests.get(query)
+            if not response.ok:
+                log(LOG_TAG, xbmc.LOGERROR, 'failed to get response from {}', query)
+            else:
+                screenshotsBlock = re.search('<div class="module clearfix screenshots-module">(.+?)(?=<\/div><\/div><\/div>)', response.text)
+                if screenshotsBlock:
+                    screenshots = re.findall('<div class="gallery-item thumb"><a data-fancybox="gallery" href="(.+?)".+?<img src="(.+?)" alt="', screenshotsBlock.group(0))
+                    if screenshots:
+                        for screenshot in screenshots:
+                            info['fanarts'].append({'image': screenshot[0], 'preview': screenshot[1]})
+
+        except Exception as e:
+            log(LOG_TAG, xbmc.LOGERROR, 'failed to get response from {} - {}', query, e)
 
         if len(info['fanarts']) > 0:
             info['thumbs']['fanart'] = info['fanarts'][0]['image']
